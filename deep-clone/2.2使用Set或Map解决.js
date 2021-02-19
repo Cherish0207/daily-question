@@ -1,12 +1,8 @@
-function deepCopy(source, hash = new WeakMap()) {
-  if (!isObject(source)) return source;
-  if (hash.has(source)) return hash.get(source); // 有，直接返回
-
+function deepCopy(source, hash = new Set()) {
   const target = Array.isArray(source) ? [] : {};
-  // 没有，将当前对象作为key，克隆对象作为value进行存储
-  hash.set(source, target); // 给hash设值
   for (const [key, value] of Object.entries(source)) {
-    if (isObject(value)) {
+    if (!hash.has(value) && !isPrimitive(value)) {
+      hash.add(value);
       target[key] = deepCopy(value, hash);
     } else {
       target[key] = value;
